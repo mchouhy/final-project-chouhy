@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const emptyCartButton = document.querySelector(".empty-cart");
+  if (emptyCartButton) {
+    emptyCartButton.addEventListener("click", function () {
+      const cartId = this.getAttribute("data-cart-id");
+      emptyCart(cartId);
+    });
+  }
   const deleteButtons = document.querySelectorAll(".delete-button");
   deleteButtons.forEach((button) => {
     button.addEventListener("click", function () {
@@ -8,6 +15,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+function emptyCart(cartId) {
+  fetch(`/api/carts/${cartId}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Error al vaciar el carrito");
+      }
+      location.reload(); // Recarga la página directamente si no hay cuerpo de respuesta
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
 
 function deleteProductById(cartId, productId) {
   fetch(`/api/carts/${cartId}/product/${productId}`, {
